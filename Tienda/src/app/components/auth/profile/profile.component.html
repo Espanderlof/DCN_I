@@ -1,0 +1,90 @@
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2 class="mb-0">Mi Perfil</h2>
+                        <button class="btn" [ngClass]="editMode ? 'btn-danger' : 'btn-primary'"
+                            (click)="toggleEditMode()">
+                            {{ editMode ? 'Cancelar' : 'Editar Perfil' }}
+                        </button>
+                    </div>
+
+                    @if (successMessage) {
+                    <div class="alert alert-success">{{ successMessage }}</div>
+                    }
+
+                    @if (errorMessage) {
+                    <div class="alert alert-danger">{{ errorMessage }}</div>
+                    }
+
+                    @if (!editMode) {
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Nombre:</label>
+                            <p>{{ user?.nombre }}</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Apellido:</label>
+                            <p>{{ user?.apellido }}</p>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label class="form-label fw-bold">Email:</label>
+                            <p>{{ user?.email }}</p>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label class="form-label fw-bold">Dirección:</label>
+                            <p>{{ user?.direccion }}</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Teléfono:</label>
+                            <p>{{ user?.telefono || 'No especificado' }}</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Rol:</label>
+                            <p>{{ user?.role }}</p>
+                        </div>
+                    </div>
+                    }
+
+                    @if (editMode) {
+                    <form (ngSubmit)="onSubmit()" #profileForm="ngForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="nombre" class="form-label">Nombre</label>
+                                <input type="text" class="form-control" id="nombre" name="nombre"
+                                    [(ngModel)]="editableUser.nombre" required>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="apellido" class="form-label">Apellido</label>
+                                <input type="text" class="form-control" id="apellido" name="apellido"
+                                    [(ngModel)]="editableUser.apellido" required>
+                            </div>
+
+                            <div class="col-12 mb-3">
+                                <label for="direccion" class="form-label">Dirección</label>
+                                <input type="text" class="form-control" id="direccion" name="direccion"
+                                    [(ngModel)]="editableUser.direccion" required>
+                            </div>
+
+                            <div class="col-12 mb-3">
+                                <label for="telefono" class="form-label">Teléfono</label>
+                                <input type="tel" class="form-control" id="telefono" name="telefono"
+                                    [(ngModel)]="editableUser.telefono">
+                            </div>
+
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-success w-100">
+                                    Guardar Cambios
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

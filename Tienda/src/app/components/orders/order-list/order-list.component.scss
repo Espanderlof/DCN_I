@@ -1,0 +1,45 @@
+.accordion-item {
+    border: none;
+}
+
+.btn-link {
+    text-decoration: none;
+    color: #0d6efd;
+
+    &:hover {
+        color: #0a58ca;
+    }
+}
+
+.badge {
+    font-size: 0.875rem;
+    padding: 0.5em 0.75em;
+}
+
+.table {
+
+    th,
+    td {
+        vertical-align: middle;
+    }
+}
+
+.btn-group {
+    .btn {
+        margin-right: 0.25rem;
+
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+}
+
+.table-sm {
+    font-size: 0.875rem;
+    background-color: #f8f9fa;
+    border-radius: 0.25rem;
+
+    th {
+        background-color: #e9ecef;
+    }
+}

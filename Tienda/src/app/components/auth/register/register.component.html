@@ -1,0 +1,128 @@
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="text-center mb-4">Registro</h2>
+
+                    @if (errorMessage) {
+                    <div class="alert alert-danger">{{ errorMessage }}</div>
+                    }
+
+                    <form (ngSubmit)="onSubmit(registerForm)" #registerForm="ngForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="nombre" class="form-label">Nombre *</label>
+                                <input type="text" class="form-control" [ngClass]="{'is-invalid': formErrors['nombre']}"
+                                    id="nombre" name="nombre" [(ngModel)]="registerData.nombre" #nombre="ngModel"
+                                    required minlength="2">
+                                @if (formErrors['nombre']) {
+                                <div class="invalid-feedback">
+                                    {{ formErrors['nombre'] }}
+                                </div>
+                                }
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="apellido" class="form-label">Apellido *</label>
+                                <input type="text" class="form-control"
+                                    [ngClass]="{'is-invalid': formErrors['apellido']}" id="apellido" name="apellido"
+                                    [(ngModel)]="registerData.apellido" #apellido="ngModel" required minlength="2">
+                                @if (formErrors['apellido']) {
+                                <div class="invalid-feedback">
+                                    {{ formErrors['apellido'] }}
+                                </div>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email *</label>
+                            <input type="email" class="form-control" [ngClass]="{'is-invalid': formErrors['email']}"
+                                id="email" name="email" [(ngModel)]="registerData.email" #email="ngModel" required
+                                email>
+                            @if (formErrors['email']) {
+                            <div class="invalid-feedback">
+                                {{ formErrors['email'] }}
+                            </div>
+                            }
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="direccion" class="form-label">Dirección *</label>
+                            <input type="text" class="form-control" [ngClass]="{'is-invalid': formErrors['direccion']}"
+                                id="direccion" name="direccion" [(ngModel)]="registerData.direccion"
+                                #direccion="ngModel" required>
+                            @if (formErrors['direccion']) {
+                            <div class="invalid-feedback">
+                                {{ formErrors['direccion'] }}
+                            </div>
+                            }
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="telefono" class="form-label">Teléfono</label>
+                            <input type="tel" class="form-control" [ngClass]="{'is-invalid': formErrors['telefono']}"
+                                id="telefono" name="telefono" [(ngModel)]="registerData.telefono" #telefono="ngModel"
+                                pattern="^\d{9,}$">
+                            @if (formErrors['telefono']) {
+                            <div class="invalid-feedback">
+                                {{ formErrors['telefono'] }}
+                            </div>
+                            }
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Contraseña *</label>
+                            <input type="password" class="form-control"
+                                [ngClass]="{'is-invalid': formErrors['password']}" id="password" name="password"
+                                [(ngModel)]="registerData.password" #password="ngModel" required>
+                            @if (formErrors['password']) {
+                            <div class="invalid-feedback" style="white-space: pre-line">
+                                {{ formErrors['password'] }}
+                            </div>
+                            }
+                            <small class="form-text text-muted">
+                                La contraseña debe cumplir con los siguientes requisitos:
+                                <ul class="mt-1 mb-0">
+                                    <li>Mínimo 8 caracteres</li>
+                                    <li>Máximo 20 caracteres</li>
+                                    <li>Al menos una letra mayúscula</li>
+                                    <li>Al menos una letra minúscula</li>
+                                    <li>Al menos un número</li>
+                                    <li>Al menos un carácter especial</li>
+                                </ul>
+                            </small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="confirmPassword" class="form-label">Confirmar Contraseña *</label>
+                            <input type="password" class="form-control"
+                                [ngClass]="{'is-invalid': formErrors['confirmPassword']}" id="confirmPassword"
+                                name="confirmPassword" [(ngModel)]="registerData.confirmPassword"
+                                #confirmPassword="ngModel" required>
+                            @if (formErrors['confirmPassword']) {
+                            <div class="invalid-feedback">
+                                {{ formErrors['confirmPassword'] }}
+                            </div>
+                            }
+                        </div>
+
+                        <div class="mb-3">
+                            <small class="text-muted">* Campos requeridos</small>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">
+                            Registrarse
+                        </button>
+                    </form>
+
+                    <div class="mt-3 text-center">
+                        <span>¿Ya tienes cuenta? </span>
+                        <a routerLink="/login" class="text-decoration-none">Inicia Sesión</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,59 @@
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="text-center mb-4">Iniciar Sesión</h2>
+
+                    @if (errorMessage) {
+                    <div class="alert alert-danger">{{ errorMessage }}</div>
+                    }
+
+                    <form (ngSubmit)="onSubmit(loginForm)" #loginForm="ngForm">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email *</label>
+                            <input type="email" class="form-control" [ngClass]="{'is-invalid': formErrors['email']}"
+                                id="email" name="email" [(ngModel)]="loginData.email" #email="ngModel" required email>
+                            @if (formErrors['email']) {
+                            <div class="invalid-feedback">
+                                {{ formErrors['email'] }}
+                            </div>
+                            }
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Contraseña *</label>
+                            <input type="password" class="form-control"
+                                [ngClass]="{'is-invalid': formErrors['password']}" id="password" name="password"
+                                [(ngModel)]="loginData.password" #password="ngModel" required>
+                            @if (formErrors['password']) {
+                            <div class="invalid-feedback">
+                                {{ formErrors['password'] }}
+                            </div>
+                            }
+                        </div>
+
+                        <div class="mb-3">
+                            <small class="text-muted">* Campos requeridos</small>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">
+                            Iniciar Sesión
+                        </button>
+                    </form>
+
+                    <div class="mt-3 text-center">
+                        <a routerLink="/forgot-password" class="text-decoration-none">
+                            ¿Olvidaste tu contraseña?
+                        </a>
+                    </div>
+
+                    <div class="mt-3 text-center">
+                        <span>¿No tienes cuenta? </span>
+                        <a routerLink="/register" class="text-decoration-none">Regístrate</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

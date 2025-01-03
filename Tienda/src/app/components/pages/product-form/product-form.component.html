@@ -1,0 +1,45 @@
+<div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title">{{ isEditing ? 'Editar' : 'Nuevo' }} Producto</h5>
+        <button type="button" class="btn-close" (click)="onCancel()"></button>
+    </div>
+
+    <div class="modal-body">
+        <form (ngSubmit)="onSubmit()" #productForm="ngForm">
+            <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre</label>
+                <input type="text" class="form-control" id="nombre" name="nombre" [(ngModel)]="product.nombre" required>
+            </div>
+            <div class="mb-3">
+                <label for="descripcion" class="form-label">Descripción</label>
+                <textarea class="form-control" id="descripcion" name="descripcion" [(ngModel)]="product.descripcion"
+                    required></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="precio" class="form-label">Precio</label>
+                <input type="number" class="form-control" id="precio" name="precio" [(ngModel)]="product.precio"
+                    required min="0">
+            </div>
+            <div class="mb-3">
+                <label for="stock" class="form-label">Stock</label>
+                <input type="number" class="form-control" id="stock" name="stock" [(ngModel)]="product.stock" required
+                    min="0">
+            </div>
+            <div class="mb-3">
+                <label for="categoria" class="form-label">Categoría</label>
+                <input type="text" class="form-control" id="categoria" name="categoria" [(ngModel)]="product.categoria"
+                    required>
+            </div>
+            <div class="mb-3">
+                <label for="imagenUrl" class="form-label">URL de Imagen</label>
+                <input type="text" class="form-control" id="imagenUrl" name="imagenUrl" [(ngModel)]="product.imagenUrl">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancelar</button>
+                <button type="submit" class="btn btn-primary" [disabled]="!productForm.form.valid">
+                    {{ isEditing ? 'Actualizar' : 'Crear' }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

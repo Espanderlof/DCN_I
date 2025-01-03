@@ -1,0 +1,98 @@
+<div class="container mt-4">
+    <h2>{{ isAdmin ? 'Todas las Órdenes' : 'Mis Órdenes' }}</h2>
+
+    @if (orders.length === 0) {
+    <div class="alert alert-info">
+        No hay órdenes para mostrar.
+    </div>
+    } @else {
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    @if (isAdmin) {
+                    <th>Cliente</th>
+                    }
+                    <th>Fecha</th>
+                    <th>Total</th>
+                    <th>Estado</th>
+                    @if (isAdmin) {
+                    <th>Acciones</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @for (order of orders; track order.id) {
+                <tr>
+                    <td>#{{ order.id }}</td>
+                    @if (isAdmin) {
+                    <td>{{ order.userName }}</td>
+                    }
+                    <td>{{ order.createdAt | date:'medium' }}</td>
+                    <td>$ {{ order.total.toLocaleString('es-CL') }}</td>
+                    <td>
+                        <span class="badge" [ngClass]="getBadgeClass(order.status)">
+                            {{ order.status }}
+                        </span>
+                    </td>
+                    @if (isAdmin) {
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn btn-success btn-sm" (click)="updateStatus(order.id, 'ENTREGADA')"
+                                [disabled]="order.status === 'ENTREGADA' || processingOrderId === order.id">
+                                <span *ngIf="processingOrderId === order.id"
+                                    class="spinner-border spinner-border-sm me-1"></span>
+                                Entregar
+                            </button>
+                            <button class="btn btn-danger btn-sm" (click)="updateStatus(order.id, 'CANCELADA')"
+                                [disabled]="order.status === 'CANCELADA' || processingOrderId === order.id">
+                                <span *ngIf="processingOrderId === order.id"
+                                    class="spinner-border spinner-border-sm me-1"></span>
+                                Cancelar
+                            </button>
+                        </div>
+                    </td>
+                    }
+                </tr>
+                <tr>
+                    <td [attr.colspan]="isAdmin ? 6 : 5">
+                        <div class="accordion-item">
+                            <button class="btn btn-link p-0" (click)="toggleDetails(order)">
+                                <i class="bi"
+                                    [ngClass]="expandedOrderId === order.id ? 'bi-chevron-down' : 'bi-chevron-right'"></i>
+                                Ver detalles
+                            </button>
+                            @if (expandedOrderId === order.id) {
+                            <div class="mt-2">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Producto</th>
+                                            <th>Cantidad</th>
+                                            <th>Precio</th>
+                                            <th>Subtotal</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (item of order.items; track item.productId) {
+                                        <tr>
+                                            <td>{{ item.productName }}</td>
+                                            <td>{{ item.quantity }}</td>
+                                            <td>$ {{ item.price.toLocaleString('es-CL') }}</td>
+                                            <td>$ {{ item.subtotal.toLocaleString('es-CL') }}</td>
+                                        </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            }
+                        </div>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    }
+</div>

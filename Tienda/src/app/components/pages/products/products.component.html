@@ -1,0 +1,67 @@
+<div class="container mt-4 mb-4">
+    <h2 id="productos" class="mb-4">Productos</h2>
+
+    <!-- Filtros -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <input type="text" class="form-control" placeholder="Buscar productos..." [(ngModel)]="searchTerm"
+                (input)="searchProducts()">
+        </div>
+        <div class="col-md-6">
+            <select class="form-select" [(ngModel)]="selectedCategory" (change)="filterByCategory()">
+                <option value="">Todas las categorías</option>
+                @for (category of categories; track category) {
+                <option [value]="category">{{category}}</option>
+                }
+            </select>
+        </div>
+    </div>
+
+    <!-- Estado de carga -->
+    @if (loading) {
+    <div class="text-center mb-4">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
+    </div>
+    }
+
+    <!-- Mensaje de error -->
+    @if (error) {
+    <div class="alert alert-danger mb-4">
+        {{error}}
+    </div>
+    }
+
+    <!-- Lista de productos -->
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @for (product of products; track product.id) {
+        <div class="col">
+            <div class="card h-100">
+                @if (product.imagenUrl) {
+                <img [src]="product.imagenUrl" class="card-img-top" [alt]="product.nombre">
+                }
+                <div class="card-body">
+                    <h5 class="card-title" id="product.nombre">{{ product.nombre }}</h5>
+
+                    <p class="card-text">{{ product.descripcion }}</p>
+
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge bg-primary">{{ product.categoria }}</span>
+                        <span class="text-success fw-bold">Stock: {{ product.stock }}</span>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="h4 mb-0">$ {{ product.precio.toLocaleString('es-CL') }}</span>
+                        @if (isClient() | async) {
+                        <button class="btn btn-primary" (click)="addToCart(product)" [disabled]="product.stock <= 0">
+                            {{ product.stock > 0 ? 'Añadir al carrito' : 'Sin Stock' }}
+                        </button>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        }
+    </div>
+</div>
