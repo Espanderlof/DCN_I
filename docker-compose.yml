@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  tienda_usuarios:
+    build:
+      context: ./Tienda_Usuarios
+      dockerfile: Dockerfile
+    container_name: tienda_usuarios_backend
+    restart: always
+    networks:
+      - tienda_network
+    ports:
+      - "8081:8081"
+
+  tienda_productos:
+    build:
+      context: ./Tienda_Productos
+      dockerfile: Dockerfile
+    container_name: tienda_productos_backend
+    restart: always
+    networks:
+      - tienda_network
+    ports:
+      - "8082:8082"
+
+  tienda_ordenes:
+    build:
+      context: ./Tienda_Ordenes
+      dockerfile: Dockerfile
+    container_name: tienda_ordenes_backend
+    restart: always
+    networks:
+      - tienda_network
+    ports:
+      - "8083:8083"
+
+  tienda_web:
+    build:
+      context: ./Tienda
+      dockerfile: Dockerfile
+    container_name: tienda-web
+    restart: always
+    networks:
+      - tienda_network
+    ports:
+      - "8080:80"
+
+networks:
+  tienda_network:
+    name: CLOUD_NATIVE_I
+    driver: bridge
