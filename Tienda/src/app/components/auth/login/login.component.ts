@@ -1,17 +1,23 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
+import { MsalService, MsalModule } from '@azure/msal-angular';
+import { PublicClientApplication, InteractionStatus } from '@azure/msal-browser';
+import { msalConfig } from '../../../auth/msal.config';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, MsalModule],
+  providers: [MsalService],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
+  private msalInstance: PublicClientApplication;
+
   loginData = {
     email: '',
     password: ''
@@ -21,8 +27,36 @@ export class LoginComponent {
 
   constructor(
     private authService: AuthService,
-    private router: Router
-  ) { }
+    private router: Router,
+    private msalService: MsalService
+  ) {
+    this.msalInstance = new PublicClientApplication(msalConfig);
+  }
+
+  async ngOnInit() {
+    try {
+      await this.msalInstance.initialize();
+      console.log('MSAL Service initialized:', this.msalInstance);
+      const accounts = this.msalInstance.getAllAccounts();
+      console.log('Cuentas activas:', accounts);
+    } catch (error) {
+      console.error('Error initializing MSAL in login component:', error);
+    }
+  }
+
+  async testLogin() {
+    try {
+      console.log('Intentando login...');
+      await this.msalInstance.initialize();
+      const loginRequest = {
+        scopes: ["openid", "profile"]
+      };
+      
+      await this.msalInstance.loginRedirect(loginRequest);
+    } catch (error) {
+      console.error('Error en login:', error);
+    }
+  }
 
   validateForm(): boolean {
     this.formErrors = {};
