@@ -1,16 +1,16 @@
 <div class="container mt-4">
-    <h2>{{ isAdmin ? 'Todas las Órdenes' : 'Mis Órdenes' }}</h2>
+    <h2>{{ isAdmin ? 'Todas las ventas' : 'Mis Compras' }}</h2>
 
     @if (orders.length === 0) {
     <div class="alert alert-info">
-        No hay órdenes para mostrar.
+        No hay ventas para mostrar.
     </div>
     } @else {
     <div class="table-responsive">
         <table class="table">
             <thead>
                 <tr>
-                    <th>ID</th>
+                    <th>N° Boleta</th>
                     @if (isAdmin) {
                     <th>Cliente</th>
                     }
