@@ -1,9 +1,11 @@
 import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { MsalService } from '@azure/msal-angular';
 import { AuthenticationResult } from '@azure/msal-browser';
 import { Observable, from, of } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +14,10 @@ export class AzureAuthService {
   private readonly TOKEN_KEY = 'msal_id_token';
   private readonly platformId = inject(PLATFORM_ID);
 
-  constructor(private msalService: MsalService) {}
+  constructor(
+    private msalService: MsalService,
+    private http: HttpClient
+  ) {}
 
   saveToken(token: string): void {
     if (isPlatformBrowser(this.platformId)) {
@@ -71,5 +76,15 @@ export class AzureAuthService {
       );
     }
     return of(false);
+  }
+
+  getAzureProfile(): Observable<any> {
+    const token = this.getToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    
+    return this.http.get(
+      `${environment.apis.usuarios.baseUrl}/${environment.apis.usuarios.endpoints.perfilAzure}`,
+      { headers }
+    );
   }
 }

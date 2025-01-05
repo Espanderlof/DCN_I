@@ -45,13 +45,13 @@ export class LoginComponent implements OnInit, OnDestroy {
           const payload = result.payload as AuthenticationResult;
           if (payload.idToken) {
             this.azureAuthService.saveToken(payload.idToken);
-            this.router.navigate(['/products']);
+            //this.router.navigate(['/products']);
           }
         });
 
       // Detectar si ya hay una sesión activa
       if (this.azureAuthService.isLoggedInWithAzure()) {
-        this.router.navigate(['/products']);
+        //this.router.navigate(['/products']);
       }
     }
   }

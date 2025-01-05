@@ -39,7 +39,7 @@ export const environment = {
       authority: 'https://DCNGP6.b2clogin.com/DCNGP6.onmicrosoft.com/B2C_1_DCNGP6_LOGIN/v2.0',
       knownAuthorities: ['DCNGP6.b2clogin.com'],
       redirectUri: 'http://localhost:4200/login',
-      postLogoutRedirectUri: 'http://localhost:4200/',
+      postLogoutRedirectUri: 'http://localhost:4200/login',
       navigateToLoginRequestUrl: true
     }
   },
