@@ -34,16 +34,16 @@ services:
     ports:
       - "8083:8083"
 
-  tienda_web:
-    build:
-      context: ./Tienda
-      dockerfile: Dockerfile
-    container_name: tienda-web
-    restart: always
-    networks:
-      - tienda_network
-    ports:
-      - "8080:80"
+  # tienda_web:
+  #   build:
+  #     context: ./Tienda
+  #     dockerfile: Dockerfile
+  #   container_name: tienda-web
+  #   restart: always
+  #   networks:
+  #     - tienda_network
+  #   ports:
+  #     - "8080:80"
 
 networks:
   tienda_network:
