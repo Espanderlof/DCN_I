@@ -37,8 +37,13 @@
                             <small class="text-muted">* Campos requeridos</small>
                         </div>
 
-                        <button type="submit" class="btn btn-primary w-100">
+                        <button type="submit" class="btn btn-primary w-100 mb-3">
                             Iniciar Sesión
+                        </button>
+
+                        <!-- Botón de Azure -->
+                        <button type="button" (click)="loginWithAzure()" class="btn btn-secondary w-100">
+                            Iniciar sesión con Azure
                         </button>
                     </form>
 
