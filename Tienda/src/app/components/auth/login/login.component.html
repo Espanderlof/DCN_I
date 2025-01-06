@@ -9,43 +9,56 @@
                     <div class="alert alert-danger">{{ errorMessage }}</div>
                     }
 
-                    <form (ngSubmit)="onSubmit(loginForm)" #loginForm="ngForm">
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email *</label>
-                            <input type="email" class="form-control" [ngClass]="{'is-invalid': formErrors['email']}"
-                                id="email" name="email" [(ngModel)]="loginData.email" #email="ngModel" required email>
-                            @if (formErrors['email']) {
-                            <div class="invalid-feedback">
-                                {{ formErrors['email'] }}
-                            </div>
-                            }
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email *</label>
+                        <input type="email" class="form-control" 
+                            [class.is-invalid]="emailError"
+                            id="email" 
+                            [(ngModel)]="loginData.email">
+                        @if (emailError) {
+                        <div class="invalid-feedback">
+                            {{ emailError }}
                         </div>
+                        }
+                    </div>
 
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Contraseña *</label>
-                            <input type="password" class="form-control"
-                                [ngClass]="{'is-invalid': formErrors['password']}" id="password" name="password"
-                                [(ngModel)]="loginData.password" #password="ngModel" required>
-                            @if (formErrors['password']) {
-                            <div class="invalid-feedback">
-                                {{ formErrors['password'] }}
-                            </div>
-                            }
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Contraseña *</label>
+                        <input type="password" class="form-control"
+                            [class.is-invalid]="passwordError"
+                            id="password" 
+                            [(ngModel)]="loginData.password">
+                        @if (passwordError) {
+                        <div class="invalid-feedback">
+                            {{ passwordError }}
                         </div>
+                        }
+                    </div>
 
-                        <div class="mb-3">
-                            <small class="text-muted">* Campos requeridos</small>
-                        </div>
+                    <div class="mb-3">
+                        <small class="text-muted">* Campos requeridos</small>
+                    </div>
 
-                        <button type="submit" class="btn btn-primary w-100 mb-3">
-                            Iniciar Sesión
-                        </button>
+                    <button type="button" 
+                            (click)="login()" 
+                            class="btn btn-primary w-100 mb-3">
+                        Iniciar Sesión
+                    </button>
 
-                        <!-- Botón de Azure -->
-                        <button type="button" (click)="loginWithAzure()" class="btn btn-secondary w-100">
-                            Iniciar sesión con Azure
-                        </button>
-                    </form>
+                    <!-- Botón de Azure -->
+                    <button type="button" 
+                            (click)="loginWithAzure()" 
+                            class="btn btn-secondary w-100 mb-3">
+                        Iniciar sesión con Azure
+                    </button>
+
+                    <!-- Nuevo botón para consultar perfil -->
+                    <button 
+                    type="button" 
+                    (click)="getAzureProfile()" 
+                    class="btn btn-info w-100">
+                    Consultar Perfil Azure
+                    </button>
 
                     <div class="mt-3 text-center">
                         <a routerLink="/forgot-password" class="text-decoration-none">

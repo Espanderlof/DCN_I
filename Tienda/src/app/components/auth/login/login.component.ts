@@ -1,13 +1,14 @@
 import { Component, OnInit, OnDestroy, PLATFORM_ID, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { FormsModule, NgForm } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { AzureAuthService } from '../../../services/azure-auth.service';
 import { MsalBroadcastService } from '@azure/msal-angular';
-import { AuthenticationResult, EventMessage, EventType, InteractionStatus } from '@azure/msal-browser';
-import { Subject } from 'rxjs';
+import { AuthenticationResult, EventMessage, EventType } from '@azure/msal-browser';
+import { from, Observable, Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -22,7 +23,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     password: ''
   };
   errorMessage = '';
-  formErrors: { [key: string]: string } = {};
+  emailError = '';
+  passwordError = '';
   private readonly _destroying$ = new Subject<void>();
   private readonly platformId = inject(PLATFORM_ID);
 
@@ -35,7 +37,6 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
-      // Manejar eventos de inicio de sesión exitoso
       this.msalBroadcastService.msalSubject$
         .pipe(
           filter((msg: EventMessage) => msg.eventType === EventType.LOGIN_SUCCESS),
@@ -44,52 +45,38 @@ export class LoginComponent implements OnInit, OnDestroy {
         .subscribe((result: EventMessage) => {
           const payload = result.payload as AuthenticationResult;
           if (payload.idToken) {
+            console.log('Login exitoso, guardando token...');
             this.azureAuthService.saveToken(payload.idToken);
-            //this.router.navigate(['/products']);
           }
         });
-
-      // Detectar si ya hay una sesión activa
-      if (this.azureAuthService.isLoggedInWithAzure()) {
-        //this.router.navigate(['/products']);
-      }
     }
   }
 
-  loginWithAzure(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      this.azureAuthService.loginWithRedirect().subscribe({
-        error: (error) => {
-          console.error('Error iniciando sesión con Azure:', error);
-          this.errorMessage = 'Error al iniciar sesión con Azure';
-        }
-      });
-    }
-  }
-
-  validateForm(): boolean {
-    this.formErrors = {};
+  validateLogin(): boolean {
+    this.emailError = '';
+    this.passwordError = '';
     let isValid = true;
 
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    
     if (!this.loginData.email) {
-      this.formErrors['email'] = 'El email es requerido';
+      this.emailError = 'El email es requerido';
       isValid = false;
     } else if (!emailRegex.test(this.loginData.email)) {
-      this.formErrors['email'] = 'El email no es válido';
+      this.emailError = 'El email no es válido';
       isValid = false;
     }
 
     if (!this.loginData.password) {
-      this.formErrors['password'] = 'La contraseña es requerida';
+      this.passwordError = 'La contraseña es requerida';
       isValid = false;
     }
 
     return isValid;
   }
 
-  onSubmit(form: NgForm): void {
-    if (form.valid && this.validateForm()) {
+  login(): void {
+    if (this.validateLogin()) {
       this.authService.login(this.loginData.email, this.loginData.password)
         .subscribe({
           next: (user) => {
@@ -103,8 +90,28 @@ export class LoginComponent implements OnInit, OnDestroy {
             this.errorMessage = 'Error al iniciar sesión';
           }
         });
-    } else {
-      this.errorMessage = 'Por favor, complete todos los campos correctamente';
+    }
+  }
+
+  getAzureProfile(): void {
+    this.azureAuthService.getAzureProfile().subscribe({
+      next: (profile) => {
+        console.log('Perfil de Azure obtenido:', profile);
+      },
+      error: (error) => {
+        console.error('Error al obtener perfil de Azure:', error);
+      }
+    });
+  }
+
+  loginWithAzure(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.azureAuthService.loginWithRedirect().subscribe({
+        error: (error) => {
+          console.error('Error iniciando sesión con Azure:', error);
+          this.errorMessage = 'Error al iniciar sesión con Azure';
+        }
+      });
     }
   }
 

@@ -1,6 +1,6 @@
 import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { MsalService } from '@azure/msal-angular';
 import { AuthenticationResult } from '@azure/msal-browser';
 import { Observable, from, of } from 'rxjs';
@@ -78,13 +78,40 @@ export class AzureAuthService {
     return of(false);
   }
 
+  private async fetchAzureProfile(token: string | null): Promise<any> {
+    if (!token) {
+      throw new Error('No hay token disponible');
+    }
+  
+    try {
+      const response = await fetch(
+        environment.apiConfig.uri, 
+        {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+  
+      if (!response.ok) {
+        const errorBody = await response.text();
+        console.error('Error en la respuesta:', errorBody);
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+  
+      const data = await response.json();
+      //console.log('Perfil de Azure obtenido:', data);
+      return data;
+    } catch (error) {
+      console.error('Error al obtener perfil de Azure:', error);
+      throw error;
+    }
+  }
+
   getAzureProfile(): Observable<any> {
     const token = this.getToken();
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    
-    return this.http.get(
-      `${environment.apis.usuarios.baseUrl}/${environment.apis.usuarios.endpoints.perfilAzure}`,
-      { headers }
-    );
+    return from(this.fetchAzureProfile(token));
   }
 }
