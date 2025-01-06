@@ -47,6 +47,58 @@ export class LoginComponent implements OnInit, OnDestroy {
           if (payload.idToken) {
             console.log('Login exitoso, guardando token...');
             this.azureAuthService.saveToken(payload.idToken);
+
+            // Obtener perfil y verificar/crear cuenta
+            this.azureAuthService.getAzureProfile().subscribe({
+              next: (profile) => {
+                console.log('Perfil Azure obtenido:', profile);
+                
+                // Intentar login primero
+                this.authService.login(profile.email, 'azure-login').subscribe({
+                  next: (user) => {
+                    console.log('Usuario existente, login exitoso');
+                    this.router.navigate(['/products']);
+                  },
+                  error: (error) => {
+                    console.log('Usuario no existe, procediendo a crear cuenta');
+                    // Si el login falla, crear nueva cuenta
+                    const newUser = {
+                      nombre: profile.nombre,
+                      apellido: profile.apellidos,
+                      email: profile.email,
+                      password: 'azure-login', // Contraseña temporal
+                      direccion: profile.direccion,
+                      telefono: profile.telefono
+                    };
+
+                    this.authService.register(newUser).subscribe({
+                      next: () => {
+                        console.log('Cuenta creada exitosamente');
+                        // Intentar login después de crear la cuenta
+                        this.authService.login(profile.email, 'azure-login').subscribe({
+                          next: (user) => {
+                            console.log('Login exitoso después de crear cuenta');
+                            this.router.navigate(['/products']);
+                          },
+                          error: (loginError) => {
+                            console.error('Error en login después de crear cuenta:', loginError);
+                            this.errorMessage = 'Error al iniciar sesión después de crear la cuenta';
+                          }
+                        });
+                      },
+                      error: (registerError) => {
+                        console.error('Error al crear cuenta:', registerError);
+                        this.errorMessage = 'Error al crear la cuenta';
+                      }
+                    });
+                  }
+                });
+              },
+              error: (error) => {
+                console.error('Error al obtener perfil de Azure:', error);
+                this.errorMessage = 'Error al obtener datos del perfil';
+              }
+            });
           }
         });
     }
