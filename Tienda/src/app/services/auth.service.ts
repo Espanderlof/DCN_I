@@ -1,10 +1,11 @@
 import { Injectable, PLATFORM_ID, Inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, throwError, of } from 'rxjs';
 import { catchError, map, tap, mergeMap } from 'rxjs/operators';
 import { User } from '../models/user';
 import { environment } from '../../environments/environment';
+import { AzureAuthService } from './azure-auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +18,7 @@ export class AuthService {
 
   constructor(
     private http: HttpClient,
+    private azureAuthService: AzureAuthService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
     if (isPlatformBrowser(this.platformId)) {
@@ -26,6 +28,16 @@ export class AuthService {
       }
     }
     console.log('API Base URL:', this.apiUrl);
+  }
+
+  private getAuthHeaders() {
+    const token = this.azureAuthService.getToken();
+    return {
+      headers: new HttpHeaders({
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      })
+    };
   }
 
   private handleError(error: HttpErrorResponse) {
@@ -41,7 +53,7 @@ export class AuthService {
 
   register(user: Omit<User, 'id' | 'fechaCreacion' | 'ultimaActualizacion' | 'role'>): Observable<User> {
     const url = `${this.apiUrl}/${this.endpoints.registro}`;
-    return this.http.post<User>(url, { ...user, role: 'CLIENTE' })
+    return this.http.post<User>(url, { ...user, role: 'CLIENTE' }, this.getAuthHeaders())
       .pipe(catchError(this.handleError));
   }
 
@@ -72,7 +84,7 @@ export class AuthService {
       apellido: user.apellido,
       telefono: user.telefono,
       direccion: user.direccion
-    }).pipe(
+    }, this.getAuthHeaders()).pipe(
       tap(updatedUser => {
         if (isPlatformBrowser(this.platformId)) {
           const currentUser = { ...this.currentUserValue, ...updatedUser };
@@ -96,7 +108,8 @@ export class AuthService {
         }
         
         const resetUrl = `${this.apiUrl}/${this.endpoints.resetPassword}/${user.id}/reset-password`;
-        return this.http.put<void>(resetUrl, { newPassword: defaultPassword }).pipe(
+        return this.http.put<void>(resetUrl, { newPassword: defaultPassword }, this.getAuthHeaders())
+        .pipe(
           map(() => true),
           catchError(() => of(false))
         );

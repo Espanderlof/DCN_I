@@ -3,13 +3,13 @@
         <div class="col-md-6 col-lg-4">
             <div class="card">
                 <div class="card-body">
-                    <h2 class="text-center mb-4">Iniciar Sesión</h2>
+                    <!-- <h2 class="text-center mb-4">Iniciar Sesión</h2> -->
 
                     @if (errorMessage) {
                     <div class="alert alert-danger">{{ errorMessage }}</div>
                     }
 
-                    <div class="mb-3">
+                    <!-- <div class="mb-3">
                         <label for="email" class="form-label">Email *</label>
                         <input type="email" class="form-control" 
                             [class.is-invalid]="emailError"
@@ -37,13 +37,13 @@
 
                     <div class="mb-3">
                         <small class="text-muted">* Campos requeridos</small>
-                    </div>
+                    </div> -->
 
-                    <button type="button" 
+                    <!-- <button type="button" 
                             (click)="login()" 
                             class="btn btn-primary w-100 mb-3">
                         Iniciar Sesión
-                    </button>
+                    </button> -->
 
                     <!-- Botón de Azure -->
                     <button type="button" 
@@ -60,16 +60,16 @@
                     Consultar Perfil Azure
                     </button>
 
-                    <div class="mt-3 text-center">
+                    <!-- <div class="mt-3 text-center">
                         <a routerLink="/forgot-password" class="text-decoration-none">
                             ¿Olvidaste tu contraseña?
                         </a>
-                    </div>
+                    </div> -->
 
-                    <div class="mt-3 text-center">
+                    <!-- <div class="mt-3 text-center">
                         <span>¿No tienes cuenta? </span>
                         <a routerLink="/register" class="text-decoration-none">Regístrate</a>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
