@@ -3,6 +3,7 @@ package com.duoc.tienda_usuarios.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -27,7 +28,19 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
+                // Endpoints de Azure siempre protegidos
                 .requestMatchers("/api/usuario_azure/**").authenticated()
+                
+                // Endpoints protegidos de usuarios
+                .requestMatchers(HttpMethod.GET, "/api/usuarios").authenticated()
+                .requestMatchers(HttpMethod.GET, "/api/usuarios/{id}").authenticated()
+                .requestMatchers(HttpMethod.POST, "/api/usuarios").authenticated()
+                .requestMatchers(HttpMethod.PUT, "/api/usuarios/{id}").authenticated()
+                .requestMatchers(HttpMethod.DELETE, "/api/usuarios/{id}").authenticated()
+                .requestMatchers(HttpMethod.POST, "/api/usuarios/login").permitAll()
+                .requestMatchers(HttpMethod.PUT, "/api/usuarios/{id}/reset-password").authenticated()
+                
+                // Por defecto, permitir todo lo demás
                 .anyRequest().permitAll()
             )
             .oauth2ResourceServer(oauth2 -> oauth2
