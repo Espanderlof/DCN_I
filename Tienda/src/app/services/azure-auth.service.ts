@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { MsalService } from '@azure/msal-angular';
 import { AuthenticationResult } from '@azure/msal-browser';
 import { Observable, from, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -69,10 +69,16 @@ export class AzureAuthService {
   logout(): Observable<boolean> {
     if (isPlatformBrowser(this.platformId)) {
       return from(this.msalService.logoutRedirect()).pipe(
-        map(() => {
+        tap(() => {
+          // Limpiar todos los tokens y datos de Azure
           this.removeToken();
-          return true;
-        })
+          localStorage.removeItem('msal.token.keys');
+          localStorage.removeItem('msal.account.keys');
+          localStorage.removeItem('msal.interaction.status');
+          // Limpiar cualquier otro dato de sesión de Azure que pueda existir
+          this.msalService.instance.clearCache();
+        }),
+        map(() => true)
       );
     }
     return of(false);
